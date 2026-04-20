@@ -1,27 +1,25 @@
-//✅ Client Component — usa useEffect, useRouter, useTasks, useForm
+//✅ Client Component — usa useEffect, useRouter, useProjects, useForm
 'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useTasks } from '@/app/hooks/useTasks';
+import { useProjects } from '@/app/hooks/useProjects';
 import { useForm } from '@/app/hooks/useForm';
 import {
-  TASK_PRIORITIES,
-  TASK_STATUSES,
-} from '@/app/utils/mockDataTasks';
-import { mockProjects } from '@/app/utils/mockDataProjects';
+  PROJECT_PRIORITIES,
+  PROJECT_STATUSES,
+} from '@/app/utils/mockDataProjects';
 
-interface EditTaskFormProps {
-  taskId: string;
+interface EditProjectFormProps {
+  projectId: string;
 }
 
-function validateTaskForm(values: Record<string, string | boolean>) {
+function validateProjectForm(values: Record<string, string | boolean>) {
   const errors: Record<string, string> = {};
 
   const title = String(values.title ?? '').trim();
   const description = String(values.description ?? '').trim();
-  const project = String(values.project ?? '').trim();
   const status = String(values.status ?? '').trim();
   const priority = String(values.priority ?? '').trim();
 
@@ -37,10 +35,6 @@ function validateTaskForm(values: Record<string, string | boolean>) {
     errors.description = 'La descripción debe tener al menos 5 caracteres';
   }
 
-  if (!project) {
-    errors.project = 'Debes seleccionar un proyecto';
-  }
-
   if (!status) {
     errors.status = 'Debes seleccionar un estado';
   }
@@ -52,11 +46,11 @@ function validateTaskForm(values: Record<string, string | boolean>) {
   return errors;
 }
 
-export function EditTaskForm({ taskId }: EditTaskFormProps) {
+export function EditProjectForm({ projectId }: EditProjectFormProps) {
   const router = useRouter();
-  const { getTaskById, updateTask } = useTasks();
+  const { getProjectById, updateProject } = useProjects();
 
-  const task = getTaskById(taskId);
+  const project = getProjectById(projectId);
 
   const {
     values,
@@ -70,40 +64,37 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
     initialValues: {
       title: '',
       description: '',
-      project: '',
-      status: TASK_STATUSES.TODO,
-      priority: TASK_PRIORITIES.MEDIUM,
+      status: PROJECT_STATUSES.TODO,
+      priority: PROJECT_PRIORITIES.MEDIUM,
     },
-    validate: validateTaskForm,
+    validate: validateProjectForm,
     onSubmit: async (formData) => {
-      await updateTask(taskId, {
+      await updateProject(projectId, {
         title: String(formData.title),
         description: String(formData.description),
-        project: String(formData.project),
         status: String(formData.status) as
-          | typeof TASK_STATUSES[keyof typeof TASK_STATUSES],
+          | typeof PROJECT_STATUSES[keyof typeof PROJECT_STATUSES],
         priority: String(formData.priority) as
-          | typeof TASK_PRIORITIES[keyof typeof TASK_PRIORITIES],
+          | typeof PROJECT_PRIORITIES[keyof typeof PROJECT_PRIORITIES],
       });
 
-      router.push('/tasks');
+      router.push('/projects');
     },
   });
 
   useEffect(() => {
-    if (task) {
+    if (project) {
       setValues({
-        title: task.title,
-        description: task.description,
-        project: task.project,
-        status: task.status,
-        priority: task.priority,
+        title: project.title,
+        description: project.description,
+        status: project.status,
+        priority: project.priority,
       });
     }
-  }, [task, setValues]);
+  }, [project, setValues]);
 
-  if (!task) {
-    return <p className="text-red-600">No se encontró la tarea.</p>;
+  if (!project) {
+    return <p className="text-red-600">No se encontró el proyecto.</p>;
   }
 
   return (
@@ -153,14 +144,14 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
         <select
           id="status"
           name="status"
-          value={String(values.status ?? TASK_STATUSES.TODO)}
+          value={String(values.status ?? PROJECT_STATUSES.TODO)}
           onChange={handleChange}
           onBlur={handleBlur}
           className="w-full border rounded px-3 py-2"
         >
-          <option value={TASK_STATUSES.TODO}>To do</option>
-          <option value={TASK_STATUSES.IN_PROGRESS}>In progress</option>
-          <option value={TASK_STATUSES.DONE}>Done</option>
+          <option value={PROJECT_STATUSES.TODO}>To do</option>
+          <option value={PROJECT_STATUSES.IN_PROGRESS}>In progress</option>
+          <option value={PROJECT_STATUSES.DONE}>Done</option>
         </select>
       </div>
 
@@ -174,38 +165,14 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
         <select
           id="priority"
           name="priority"
-          value={String(values.priority ?? TASK_PRIORITIES.MEDIUM)}
+          value={String(values.priority ?? PROJECT_PRIORITIES.MEDIUM)}
           onChange={handleChange}
           onBlur={handleBlur}
           className="w-full border rounded px-3 py-2"
         >
-          <option value={TASK_PRIORITIES.LOW}>Low</option>
-          <option value={TASK_PRIORITIES.MEDIUM}>Medium</option>
-          <option value={TASK_PRIORITIES.HIGH}>High</option>
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="project" className="block mb-1">
-          Proyecto
-        </label>
-        {errors.project && (
-          <p className="text-red-600 text-sm mb-1">{errors.project}</p>
-        )}
-        <select
-          id="project"
-          name="project"
-          value={String(values.project ?? '')}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="">Selecciona un proyecto</option>
-          {mockProjects.map((proj) => (
-            <option key={proj.id} value={proj.id}>
-              {proj.title}
-            </option>
-          ))}
+          <option value={PROJECT_PRIORITIES.LOW}>Low</option>
+          <option value={PROJECT_PRIORITIES.MEDIUM}>Medium</option>
+          <option value={PROJECT_PRIORITIES.HIGH}>High</option>
         </select>
       </div>
 
@@ -219,11 +186,11 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
           disabled={isSubmitting}
           className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
         >
-          {isSubmitting ? 'Guardando...' : 'Actualizar tarea'}
+          {isSubmitting ? 'Guardando...' : 'Actualizar proyecto'}
         </button>
 
         <Link
-          href="/tasks"
+          href="/projects"
           className="bg-red-600 text-white px-4 py-2 rounded"
         >
           Cancelar

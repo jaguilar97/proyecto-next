@@ -1,3 +1,4 @@
+//✅ Client Component — usa useState, useMemo
 'use client';
 
 import { useState, useMemo } from 'react';

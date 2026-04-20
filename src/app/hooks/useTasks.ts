@@ -1,3 +1,4 @@
+//✅ Client Component — usa useEffect, useCallback, useTaskContext, useAsync
 'use client';
 
 import { useEffect, useCallback } from 'react';

@@ -63,21 +63,21 @@ export function TaskCard({ task, onStatusChange }: TaskCardProps)
                     <span>{task.createdAt}</span>
                 </div>
                 <div className="flex items-center gap-3 mt-4">
-                <Link
-                    href={`/tasks/updateTask/${task.id}`}
-                    className="bg-yellow-500 text-white px-14 py-1 rounded"
-                >
-                Editar
-                </Link>
+                    <Link
+                        href={`/tasks/updateTask/${task.id}`}
+                        className="bg-yellow-500 text-white px-14 py-1 rounded"
+                    >
+                    Editar
+                    </Link>
 
-                <button
-                    type="button"
-                    onClick={handleDelete}
-                    className="bg-red-600 text-white px-3 py-1 rounded"
-                >
-                Eliminar
-                </button>
-            </div>
+                    <button
+                        type="button"
+                        onClick={handleDelete}
+                        className="bg-red-600 text-white px-3 py-1 rounded"
+                    >
+                    Eliminar
+                    </button>
+                </div>
             </div>
     );
 }

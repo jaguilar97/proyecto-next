@@ -1,46 +1,93 @@
-//✅ Client Component — usa useState, useMemo
+//✅ Client Component — usa useState, useMemo, useProjects
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import type { Project } from '@/app/utils/mockDataProjects';
+import { useProjects } from '@/app/hooks/useProjects';
 import { ProjectCard } from './ProjectCard';
 import { ProjectFilters } from './ProjectFilters';
 
 type FilterValue = 'all' | Project['status'];
 
-interface ProjectListContainerProps {
-    projects: Project[];
-}
+export function ProjectListContainer() {
+  const { projects, isLoading, error } = useProjects();
+  const [filter, setFilter] = useState<FilterValue>('all');
 
-export function ProjectListContainer({ projects }: ProjectListContainerProps) {
-    const [filter, setFilter] = useState<FilterValue>('all');
-
-    const filteredProjects = useMemo(
-        () => (filter === 'all'
+  const filteredProjects = useMemo(
+    () =>
+      filter === 'all'
         ? projects
-        : projects.filter(t => t.status === filter)),
-        [filter, projects],
-    );
+        : projects.filter((t) => t.status === filter),
+    [filter, projects],
+  );
 
-    const totalCount = useMemo(() => projects.length, [projects]);
-    const filteredCount = useMemo(() => filteredProjects.length, [filteredProjects]);
+  const totalCount = useMemo(() => projects.length, [projects]);
+  const filteredCount = useMemo(() => filteredProjects.length, [filteredProjects]);
 
-    return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h2 style={{ margin: 0 }}>Proyectos ({filteredCount}/{totalCount})</h2>
-            </div>
-            <ProjectFilters current={filter} onChange={setFilter} />
-                {filteredProjects.length === 0 ? (
-                <p style={{ color: '#94a3b8', textAlign: 'center',
-                padding: '32px' }}>
-                No hay projectos con este filtro.
-                </p>
-                ) : (
-                filteredProjects.map(project => (
-                <ProjectCard key={project.id} project={project} />
-                ))
-            )}
-        </div>
-    );
+  return (
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '16px',
+        }}
+      >
+        <h2 style={{ margin: 0 }}>
+          Proyectos ({filteredCount}/{totalCount})
+        </h2>
+
+        <Link
+          href="/projects/addProject"
+          style={{
+            backgroundColor: '#2563eb',
+            color: '#fff',
+            padding: '10px 16px',
+            borderRadius: '6px',
+            textDecoration: 'none',
+          }}
+        >
+          Agregar
+        </Link>
+      </div>
+
+      <ProjectFilters current={filter} onChange={setFilter} />
+
+      {isLoading ? (
+        <p
+          style={{
+            color: '#94a3b8',
+            textAlign: 'center',
+            padding: '32px',
+          }}
+        >
+          Cargando proyectos...
+        </p>
+      ) : error ? (
+        <p
+          style={{
+            color: 'red',
+            textAlign: 'center',
+            padding: '32px',
+          }}
+        >
+          Error al cargar los proyectos.
+        </p>
+      ) : filteredProjects.length === 0 ? (
+        <p
+          style={{
+            color: '#94a3b8',
+            textAlign: 'center',
+            padding: '32px',
+          }}
+        >
+          No hay proyectos con este filtro.
+        </p>
+      ) : (
+        filteredProjects.map((project) => <ProjectCard key={project.id} project={project} />)
+      )}
+    </div>
+  );
 }

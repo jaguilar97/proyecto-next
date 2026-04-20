@@ -1,3 +1,4 @@
+//✅ Client Component — usa useContext, useReducer
 'use client';
 
 import React, { createContext, useContext, useReducer } from 'react';

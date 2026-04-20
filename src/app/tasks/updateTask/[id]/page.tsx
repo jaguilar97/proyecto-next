@@ -1,3 +1,4 @@
+//✅ Server Component — solo renderiza HTML
 import { EditTaskForm } from '@/app/tasks/updateTask/components/updateTaskForm';
 
 interface EditTaskPageProps {

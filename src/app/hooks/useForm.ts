@@ -1,3 +1,4 @@
+//✅ Client Component — usa useReducer, useCallback
 'use client';
 
 import { useReducer, useCallback } from 'react';

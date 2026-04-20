@@ -1,5 +1,7 @@
 //✅ Server Component — solo renderiza HTML
-import type { Project, ProjectStatus, ProjectPriority } from '@/app/utils/mockDataProjects';
+import type { Project, ProjectPriority, ProjectStatus } from '@/app/utils/mockDataProjects';
+import { useProjects } from '@/app/hooks/useProjects';
+import Link from 'next/link';
 
 const priorityColors: Record<ProjectPriority, string> = {
     high: '#ef4444',
@@ -14,15 +16,26 @@ const statusLabels: Record<ProjectStatus, string> = {
 
 interface ProjectCardProps {
     project: Project;
-    onStatusChange?: (taskId: string, newStatus: ProjectStatus)
+    onStatusChange?: (projectId: string, newStatus: ProjectStatus)
     => void;
 }
 
 export function ProjectCard({ project, onStatusChange }: ProjectCardProps)
 {
+    const { deleteProject } = useProjects();
+
+    const handleDelete = async () => {
+    const confirmed = window.confirm('¿Deseas eliminar este proyecto?');
+
+    if (!confirmed) {
+      return;
+    }
+
+    await deleteProject(project.id);
+  };
+
     return (
-        <div className='cardGen'>
-            <div style={{
+            <div className='cardGen' style={{
                 border: '1px solid #e2e8f0',
                 borderLeft: `4px solid ${priorityColors[project.priority]}`,
                 borderRadius: '8px',
@@ -42,10 +55,22 @@ export function ProjectCard({ project, onStatusChange }: ProjectCardProps)
                 </span>
                 </div>
                 <p style={{ color: '#64748b', fontSize: '14px', margin: '8px 0' }}>{project.description}</p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#94a3b8' }}>
-                    <span>{project.createdAt}</span>
+                <div className="flex items-center gap-3 mt-4">
+                    <Link
+                        href={`/projects/updateProject/${project.id}`}
+                        className="bg-yellow-500 text-white px-14 py-1 rounded"
+                    >
+                    Editar
+                    </Link>
+
+                    <button
+                        type="button"
+                        onClick={handleDelete}
+                        className="bg-red-600 text-white px-3 py-1 rounded"
+                    >
+                    Eliminar
+                    </button>
                 </div>
             </div>
-        </div>
     );
 }
