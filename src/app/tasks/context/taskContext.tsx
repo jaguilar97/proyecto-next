@@ -1,11 +1,13 @@
 'use client';
 
 import React, { createContext, useContext, useReducer } from 'react';
-import { mockTasks, type Task } from '@/app/utils/mockDataTasks';
+import type { Task } from '@/app/utils/mockDataTasks';
 
 type TaskAction =
   | { type: 'SET_TASKS'; payload: Task[] }
-  | { type: 'ADD_TASK'; payload: Task };
+  | { type: 'ADD_TASK'; payload: Task }
+  | { type: 'UPDATE_TASK'; payload: Task }
+  | { type: 'DELETE_TASK'; payload: string };
 
 interface TaskContextType {
   tasks: Task[];
@@ -22,6 +24,14 @@ function taskReducer(state: Task[], action: TaskAction): Task[] {
     case 'ADD_TASK':
       return [action.payload, ...state];
 
+    case 'UPDATE_TASK':
+      return state.map((task) =>
+        task.id === action.payload.id ? action.payload : task,
+      );
+
+    case 'DELETE_TASK':
+      return state.filter((task) => task.id !== action.payload);
+
     default:
       return state;
   }
@@ -32,7 +42,7 @@ export function TaskContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [tasks, dispatch] = useReducer(taskReducer, mockTasks);
+  const [tasks, dispatch] = useReducer(taskReducer, []);
 
   return (
     <TaskContext.Provider value={{ tasks, dispatch }}>

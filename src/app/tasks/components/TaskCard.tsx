@@ -1,5 +1,7 @@
 import type { Task, TaskPriority, TaskStatus } from '@/app/utils/mockDataTasks';
 import { mockProjects } from '@/app/utils/mockDataProjects';
+import { useTasks } from '@/app/hooks/useTasks';
+import Link from 'next/link';
 
 const priorityColors: Record<TaskPriority, string> = {
     high: '#ef4444',
@@ -20,8 +22,20 @@ interface TaskCardProps {
 
 export function TaskCard({ task, onStatusChange }: TaskCardProps)
 {
+    const { deleteTask } = useTasks();
+
     const projectData = mockProjects.find((proj) => proj.id === task.project);
     const projectTitle = projectData?.title ?? 'Proyecto no encontrado';
+
+    const handleDelete = async () => {
+    const confirmed = window.confirm('¿Deseas eliminar esta tarea?');
+
+    if (!confirmed) {
+      return;
+    }
+
+    await deleteTask(task.id);
+  };
 
     return (
             <div className='cardGen' style={{
@@ -48,6 +62,22 @@ export function TaskCard({ task, onStatusChange }: TaskCardProps)
                     <span>{ projectTitle }</span>
                     <span>{task.createdAt}</span>
                 </div>
+                <div className="flex items-center gap-3 mt-4">
+                <Link
+                    href={`/tasks/updateTask/${task.id}`}
+                    className="bg-yellow-500 text-white px-14 py-1 rounded"
+                >
+                Editar
+                </Link>
+
+                <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="bg-red-600 text-white px-3 py-1 rounded"
+                >
+                Eliminar
+                </button>
+            </div>
             </div>
     );
 }

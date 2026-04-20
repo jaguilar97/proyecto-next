@@ -6,8 +6,6 @@ import { useAsync } from '@/app/hooks/useAsync';
 import { taskService } from '@/app/services/taskService';
 import type { Task } from '@/app/utils/mockDataTasks';
 
-type CreateTaskInput = Task;
-
 export function useTasks() {
   const { tasks, dispatch } = useTaskContext();
 
@@ -29,8 +27,8 @@ export function useTasks() {
     }
   }, [data, dispatch, tasks.length]);
 
-  const addTask = async (taskData: CreateTaskInput) => {
-    const createdTask = await taskService.createTask(taskData);
+  const addTask = async (task: Task) => {
+    const createdTask = await taskService.createTask(task);
 
     dispatch({
       type: 'ADD_TASK',
@@ -40,9 +38,36 @@ export function useTasks() {
     return createdTask;
   };
 
+  const updateTask = async (id: string, updates: Partial<Task>) => {
+    const updatedTask = await taskService.updateTask(id, updates);
+
+    dispatch({
+      type: 'UPDATE_TASK',
+      payload: updatedTask,
+    });
+
+    return updatedTask;
+  };
+
+  const deleteTask = async (id: string) => {
+    await taskService.deleteTask(id);
+
+    dispatch({
+      type: 'DELETE_TASK',
+      payload: id,
+    });
+  };
+
+  const getTaskById = (id: string) => {
+    return tasks.find((task) => task.id === id);
+  };
+
   return {
     tasks,
     addTask,
+    updateTask,
+    deleteTask,
+    getTaskById,
     isLoading,
     error,
     refetch,
