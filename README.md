@@ -13,3 +13,11 @@ Instalación:
 Levantar el proyecto:
 1- Desde la terminal ejecute el comando 'npm run dev'.
 2- Ingrese a la URL que aparece en la terminal (http://localhost:5173) en el navegador de su preferencia.
+
+Correr pruebas:
+1- Ejecutar los siguientes comandos en la terminal:
+    npm install @testing-library/react --save-dev --force
+    npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom --force
+    npm install --save-dev @vitejs/plugin-react --force
+    npm install --save-dev vite-tsconfig-paths --force
+    npm run test
