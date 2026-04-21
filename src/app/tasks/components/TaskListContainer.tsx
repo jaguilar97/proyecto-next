@@ -13,13 +13,20 @@ type FilterValue = 'all' | Task['status'];
 export function TaskListContainer() {
   const { tasks, isLoading, error } = useTasks();
   const [filter, setFilter] = useState<FilterValue>('all');
+  const [search, setSearch] = useState('');
 
-  const filteredTasks = useMemo(
-    () =>
-      filter === 'all'
-        ? tasks
-        : tasks.filter((t) => t.status === filter),
-    [filter, tasks],
+  const filteredTasks = useMemo(() => {
+      return tasks.filter(task => {
+        const matchesStatus =
+          filter === 'all' ? true : task.status === filter;
+
+        const matchesSearch = task.title
+          .toLowerCase()
+          .includes(search.toLowerCase());
+
+        return matchesStatus && matchesSearch;
+      });
+    }, [filter, tasks, search],
   );
 
   const totalCount = useMemo(() => tasks.length, [tasks]);
@@ -53,7 +60,7 @@ export function TaskListContainer() {
         </Link>
       </div>
 
-      <TaskFilters current={filter} onChange={setFilter} />
+      <TaskFilters current={filter} onChange={setFilter} search={search} onSearchChange={setSearch} />
 
       {isLoading ? (
         <p

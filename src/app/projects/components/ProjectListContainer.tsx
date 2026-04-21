@@ -13,13 +13,20 @@ type FilterValue = 'all' | Project['status'];
 export function ProjectListContainer() {
   const { projects, isLoading, error } = useProjects();
   const [filter, setFilter] = useState<FilterValue>('all');
+  const [search, setSearch] = useState('');
 
-  const filteredProjects = useMemo(
-    () =>
-      filter === 'all'
-        ? projects
-        : projects.filter((t) => t.status === filter),
-    [filter, projects],
+  const filteredProjects = useMemo(() => {
+      return projects.filter(task => {
+        const matchesStatus =
+          filter === 'all' ? true : task.status === filter;
+
+        const matchesSearch = task.title
+          .toLowerCase()
+          .includes(search.toLowerCase());
+
+        return matchesStatus && matchesSearch;
+      });
+    }, [filter, projects, search],
   );
 
   const totalCount = useMemo(() => projects.length, [projects]);
@@ -53,7 +60,7 @@ export function ProjectListContainer() {
         </Link>
       </div>
 
-      <ProjectFilters current={filter} onChange={setFilter} />
+      <ProjectFilters current={filter} onChange={setFilter} search={search} onSearchChange={setSearch} />
 
       {isLoading ? (
         <p
