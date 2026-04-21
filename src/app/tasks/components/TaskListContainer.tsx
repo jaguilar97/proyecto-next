@@ -7,6 +7,7 @@ import type { Task } from '@/app/utils/mockDataTasks';
 import { useTasks } from '@/app/hooks/useTasks';
 import { TaskCard } from './TaskCard';
 import { TaskFilters } from './TaskFilters';
+import { LoadingSkeleton } from '@/app/components/atoms/LoadingSkeleton';
 
 type FilterValue = 'all' | Task['status'];
 
@@ -63,15 +64,7 @@ export function TaskListContainer() {
       <TaskFilters current={filter} onChange={setFilter} search={search} onSearchChange={setSearch} />
 
       {isLoading ? (
-        <p
-          style={{
-            color: '#94a3b8',
-            textAlign: 'center',
-            padding: '32px',
-          }}
-        >
-          Cargando tareas...
-        </p>
+        <LoadingSkeleton count={5} />
       ) : error ? (
         <p
           style={{

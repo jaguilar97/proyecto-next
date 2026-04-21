@@ -1,4 +1,5 @@
 //✅ Server Component — solo renderiza HTML
+import React from 'react';
 import type { Project, ProjectPriority, ProjectStatus } from '@/app/utils/mockDataProjects';
 import { useProjects } from '@/app/hooks/useProjects';
 import Link from 'next/link';
@@ -20,7 +21,7 @@ interface ProjectCardProps {
     => void;
 }
 
-export function ProjectCard({ project, onStatusChange }: ProjectCardProps)
+export const ProjectCard = React.memo(function ProjectCard({ project, onStatusChange }: ProjectCardProps)
 {
     const { deleteProject } = useProjects();
 
@@ -73,4 +74,4 @@ export function ProjectCard({ project, onStatusChange }: ProjectCardProps)
                 </div>
             </div>
     );
-}
+});

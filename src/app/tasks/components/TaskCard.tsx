@@ -1,3 +1,5 @@
+//✅ Server Component — solo renderiza HTML
+import React from 'react';
 import type { Task, TaskPriority, TaskStatus } from '@/app/utils/mockDataTasks';
 import { mockProjects } from '@/app/utils/mockDataProjects';
 import { useTasks } from '@/app/hooks/useTasks';
@@ -20,7 +22,7 @@ interface TaskCardProps {
     => void;
 }
 
-export function TaskCard({ task, onStatusChange }: TaskCardProps)
+export const TaskCard = React.memo(function TaskCard({ task, onStatusChange }: TaskCardProps)
 {
     const { deleteTask } = useTasks();
 
@@ -80,4 +82,4 @@ export function TaskCard({ task, onStatusChange }: TaskCardProps)
                 </div>
             </div>
     );
-}
+});

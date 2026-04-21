@@ -7,6 +7,7 @@ import type { Project } from '@/app/utils/mockDataProjects';
 import { useProjects } from '@/app/hooks/useProjects';
 import { ProjectCard } from './ProjectCard';
 import { ProjectFilters } from './ProjectFilters';
+import { LoadingSkeleton } from '@/app/components/atoms/LoadingSkeleton';
 
 type FilterValue = 'all' | Project['status'];
 
@@ -63,15 +64,7 @@ export function ProjectListContainer() {
       <ProjectFilters current={filter} onChange={setFilter} search={search} onSearchChange={setSearch} />
 
       {isLoading ? (
-        <p
-          style={{
-            color: '#94a3b8',
-            textAlign: 'center',
-            padding: '32px',
-          }}
-        >
-          Cargando proyectos...
-        </p>
+        <LoadingSkeleton count={5} />
       ) : error ? (
         <p
           style={{

@@ -7,14 +7,14 @@ import Providers from '@/app/providers/AppProviders';
 
 const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
- title: 'TaskFlow',
- description: 'Gestión de tareas profesional',
+  title: 'ProjectFlow',
+  description: 'Gestión de proyectos profesional',
 };
 
 export default function RootLayout({
- children,
+  children,
 }: {
- children: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <html lang="es">
