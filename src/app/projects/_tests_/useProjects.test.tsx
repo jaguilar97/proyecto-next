@@ -100,8 +100,10 @@ describe('useProjects hook', () => {
 
     const proyectId = result.current.projects[0].id;
     const proyectById = result.current.getProjectById(proyectId);
+    const ProjectByEmptyId = result.current.getProjectById("");
 
     expect(proyectById).toBeDefined();
     expect(proyectById?.id).toBe(proyectId);
+    expect(ProjectByEmptyId).toBeUndefined();
   });
 });
