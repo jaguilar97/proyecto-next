@@ -2,11 +2,6 @@
 
 ## Evidencia de optimización
 
-- el componente `TaskListContainer`
-- el componente `TaskCard`
-- la cantidad de renders
-- el tiempo de render registrado por el Profiler
-
 ## Problema identificado
 
 Durante el desarrollo del módulo de tareas se observó que varios componentes podían renderizarse más veces de lo necesario. Esto ocurría principalmente en las listas de tareas y proyectos, donde cada cambio en el contenedor provocaba la reevaluación de todos los elementos renderizados. Además, la búsqueda por texto podía dispararse en cada pulsación del teclado, generando trabajo extra en la interfaz.
@@ -21,7 +16,7 @@ También se identificó el riesgo de fugas de memoria o actualizaciones innecesa
 
 Se aplicó `React.memo` a los componentes `ProjectCard` y `TaskCard` para evitar renders innecesarios cuando sus props no cambian. Esto mejora el rendimiento de las listas, especialmente cuando existen varias tareas mostradas al mismo tiempo.
 
-**Objetivo:** evitar que cada tarjeta se vuelva a renderizar si la tarea correspondiente no cambió.
+**Objetivo:** evitar que cada tarjeta se vuelva a renderizar si la tarea o proyecto correspondiente no cambió.
 
 ---
 
@@ -43,7 +38,7 @@ Esto evita recalcular estos valores en cada render si sus dependencias no han ca
 
 Se utilizó `useCallback` en hooks y funciones que se reutilizan entre renders, por ejemplo:
 
-- carga de tareas con `fetchTasks`
+- carga de tareas con `fetchTasks` o de proyectos con `fetchProjects`
 - handlers del formulario
 - funciones del hook `useForm`
 - ejecución controlada en `useAsync`
