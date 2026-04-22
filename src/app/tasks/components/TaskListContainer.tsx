@@ -11,6 +11,12 @@ import { LoadingSkeleton } from '@/app/components/atoms/LoadingSkeleton';
 
 type FilterValue = 'all' | Task['status'];
 
+const statusColumns: { status: Task['status']; label: string }[] = [
+  { status: 'todo', label: 'Por hacer' },
+  { status: 'in_progress', label: 'En progreso' },
+  { status: 'done', label: 'Completadas' },
+];
+
 export function TaskListContainer() {
   const { tasks, isLoading, error } = useTasks();
   const [filter, setFilter] = useState<FilterValue>('all');
@@ -61,7 +67,12 @@ export function TaskListContainer() {
         </Link>
       </div>
 
-      <TaskFilters current={filter} onChange={setFilter} search={search} onSearchChange={setSearch} />
+      <TaskFilters
+        current={filter}
+        onChange={setFilter}
+        search={search}
+        onSearchChange={setSearch}
+      />
 
       {isLoading ? (
         <LoadingSkeleton count={5} />
@@ -86,7 +97,83 @@ export function TaskListContainer() {
           No hay tareas con este filtro.
         </p>
       ) : (
-        filteredTasks.map((task) => <TaskCard key={task.id} task={task} />)
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+            gap: '16px',
+            alignItems: 'start',
+          }}
+        >
+          {statusColumns.map((column) => {
+            const columnTasks = filteredTasks.filter(
+              (task) => task.status === column.status,
+            );
+
+            return (
+              <div
+                key={column.status}
+                style={{
+                  backgroundColor: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '10px',
+                  padding: '12px',
+                  minHeight: '420px',
+                }}
+              >
+                <div
+                  style={{
+                    marginBottom: '12px',
+                    paddingBottom: '8px',
+                    borderBottom: '1px solid #e2e8f0',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <h3
+                    style={{
+                      margin: 0,
+                      fontSize: '15px',
+                      color: '#0f172a',
+                    }}
+                  >
+                    {column.label}
+                  </h3>
+
+                  <span
+                    style={{
+                      fontSize: '12px',
+                      backgroundColor: '#e2e8f0',
+                      color: '#334155',
+                      borderRadius: '999px',
+                      padding: '2px 8px',
+                    }}
+                  >
+                    {columnTasks.length}
+                  </span>
+                </div>
+
+                {columnTasks.length === 0 ? (
+                  <p
+                    style={{
+                      color: '#94a3b8',
+                      textAlign: 'center',
+                      padding: '24px 8px',
+                      fontSize: '14px',
+                    }}
+                  >
+                    Sin tareas
+                  </p>
+                ) : (
+                  columnTasks.map((task) => (
+                    <TaskCard key={task.id} task={task} />
+                  ))
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );
